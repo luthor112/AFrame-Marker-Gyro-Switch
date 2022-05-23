@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/takahirox/a-mmd/v1.0.3/build/a-mmd.min.js"></script>
+    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+    <script>
+      AFRAME.registerComponent("unhide", {
+        schema: {},
+        init: function () {
+          this.el.object3D.visible = true;
+        },
+        tick: function () {
+          if(this.el.object3D.visible == false) {
+            this.el.object3D.visible = true;
+          }
+        }
+      });
+      
+      AFRAME.registerComponent("gyrocontrol", {
+        schema: {},
+        init: function () {
+          this.camTag = document.getElementById("camEntity");
+        },
+        tick: function () {
+          if(this.el.object3D.visible == false) {
+            this.camTag.setAttribute("look-controls", "enabled", "true");
+          } else {
+            this.camTag.setAttribute("look-controls", "enabled", "false");
+            this.camTag.object3D.rotation.set(0, 0, 0);
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+
+<!-- 
+The license of MMD assets used here
+https://github.com/mrdoob/three.js/tree/dev/examples/models/mmd#readme
+-->
+
+    <a-scene antialias="true" arjs="debugUIEnabled: false;">
+      <a-marker preset="hiro" unhide>
+        <a-entity rotation="-90 0 0">
+          <a-entity mmd position="0 -17 0">
+            <a-entity mmd-model="model:https://cdn.rawgit.com/mrdoob/three.js/r87/examples/models/mmd/miku/miku_v2.pmd;
+                                 vpd:https://cdn.rawgit.com/takahirox/MMDLoader-app/master/assets/vpd/imas/makoto_basic.vpd;
+                                 physics:false; blink:true"></a-entity> <!-- shadow="cast:true" -->
+          </a-entity>
+        </a-entity>
+      </a-marker>
+      <a-marker preset="kanji" gyrocontrol>
+        <a-box color="#0000FF" depth="0.001" height="0.001" width="0.001"></a-box>
+      </a-marker>
+      
+      <a-entity light="type:directional;
+                       castShadow:true;
+                       color:#888;
+                       shadowMapWidth:1024;
+                       shadowMapHeight:1024;
+                       shadowCameraRight:20;
+                       shadowCameraTop:20;
+                       shadowCameraLeft:-20;
+                       shadowCameraBottom:-20"
+                position="-20 20 20"></a-entity>
+      
+      <a-entity id="camEntity" camera look-controls="enabled: false;"></a-entity>
+    </a-scene>
+
+  </body>
+</html>
